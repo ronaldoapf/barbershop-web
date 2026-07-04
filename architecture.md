@@ -1,6 +1,8 @@
 # Architecture & Constraints
 
-This repository is built with **React 19**, **Vite**, **Tailwind CSS v4**, and **shadcn/ui**, following a modular, domain-driven structure that enforces clean separation between UI components, form state, and API layers.
+This is the frontend for a **barbershop management system** — a web application for barbershop owners and staff to manage appointments, clients, barbers, services, and financials.
+
+The codebase is built with **React 19**, **Vite**, **Tailwind CSS v4**, and **shadcn/ui**, following a modular, domain-driven structure that enforces clean separation between UI components, form state, and API layers.
 
 ---
 

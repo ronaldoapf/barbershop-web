@@ -2,7 +2,7 @@ import { GalleryVerticalEnd } from "lucide-react"
 
 import { LoginForm } from "./components/login-form"
 
-export default function Login() {
+export function Login() {
   return (
     <div className="relative min-h-svh overflow-hidden bg-background">
       <div className="pointer-events-none absolute -left-[360px] top-1/2 hidden size-[900px] -translate-y-1/2 rounded-full border border-primary/[0.08] md:block" />

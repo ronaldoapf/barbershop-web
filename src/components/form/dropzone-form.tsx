@@ -1,8 +1,9 @@
 import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
 import type { DropzoneOptions } from "react-dropzone"
 
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import { Field, FieldLabel } from "@/components/ui/field"
 import { Dropzone } from "@/components/dropzone"
+import { FormError } from "@/components/form/form-error"
 
 interface DropzoneFormProps<T extends FieldValues> {
   control: Control<T>
@@ -42,7 +43,7 @@ export function DropzoneForm<T extends FieldValues>({
         multiple={multiple}
         disabled={disabled}
       />
-      <FieldError errors={[fieldState.error]} />
+      <FormError error={fieldState.error} />
     </Field>
   )
 }

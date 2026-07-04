@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project
+
+This is a **barbershop management frontend** — a web application for managing a barbershop's day-to-day operations. Target users are barbershop owners and staff. Core domain areas include appointments/scheduling, clients, barbers, services, and financial overview.
+
 ## Architecture
 
 **Read `architecture.md` before making any non-trivial change.** It is the authoritative source of truth for all conventions in this project — component structure, API layer, forms, routing, TypeScript rules, state management, utilities, environment variables, and git conventions.

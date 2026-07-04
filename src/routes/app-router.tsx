@@ -1,13 +1,18 @@
 import { DesignSystemLayout } from '@/components/layout/design-layout'
+import { PrivateLayout } from '@/components/layout/private-layout'
+import { AuthCallback } from '@/pages/auth-callback'
+import { Customers } from '@/pages/customers'
 import { ColorsPage } from '@/pages/design-system/colors'
 import { ComponentsPage } from '@/pages/design-system/components'
 import { DataTablePage } from '@/pages/design-system/data-table'
 import { FormsPage } from '@/pages/design-system/forms'
+import { Employees } from '@/pages/employees'
 import { ForgotPassword } from '@/pages/forgot-password'
-import Login from '@/pages/login'
+import { Login } from '@/pages/login'
 import { ResetPassword } from '@/pages/reset-password'
-import { SignUp } from '@/pages/sign-up'
 import { Sandbox } from '@/pages/sandbox'
+import { Services } from '@/pages/services'
+import { SignUp } from '@/pages/sign-up'
 import { Routes, Route } from 'react-router-dom'
 
 export function AppRouter() {
@@ -25,7 +30,14 @@ export function AppRouter() {
 			<Route path="/sign-up" element={<SignUp />} />
 			<Route path="/forgot-password" element={<ForgotPassword />} />
 			<Route path="/reset-password" element={<ResetPassword />} />
+			<Route path="/auth/callback" element={<AuthCallback />} />
 
+			<Route path="/app" element={<PrivateLayout />}>
+				<Route index element={<h1>App Home</h1>} />
+				<Route path="services" element={<Services />} />
+				<Route path="customers" element={<Customers />} />
+				<Route path="employees" element={<Employees />} />
+			</Route>
 		</Routes>
 	)
 }

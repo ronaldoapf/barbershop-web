@@ -1,8 +1,8 @@
-import { useState } from "react"
-import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
+import { useState, type ComponentProps } from "react"
+import { useController, type FieldValues, type UseControllerProps } from "react-hook-form"
 import { Eye, EyeOff } from "lucide-react"
 
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
+import { FormError } from "@/components/form/form-error"
 import {
   InputGroup,
   InputGroupAddon,
@@ -10,41 +10,34 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 
-interface PasswordInputFormProps<T extends FieldValues> {
-  control: Control<T>
-  name: Path<T>
-  label: string
-  labelAction?: React.ReactNode
-  placeholder?: string
-}
+type PasswordInputFormProps <T extends FieldValues> = ComponentProps<typeof InputGroupInput> & UseControllerProps<T>
 
 export function PasswordInputForm<T extends FieldValues>({
   control,
   name,
-  label,
-  labelAction,
   placeholder,
+  disabled,
+  ...props
 }: PasswordInputFormProps<T>): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false)
   const { field, fieldState } = useController({ control, name })
 
   return (
-    <Field data-invalid={fieldState.error ? true : undefined}>
-      <div className="flex items-center">
-        <FieldLabel htmlFor={String(name)} className="text-foreground">{label}</FieldLabel>
-        {labelAction}
-      </div>
+    <>
       <InputGroup>
         <InputGroupInput
           id={String(name)}
-          type={showPassword ? "text" : "password"}
+          disabled={disabled}
           placeholder={placeholder}
           aria-invalid={!!fieldState.error}
+          type={showPassword ? "text" : "password"}
+          {...props}
           {...field}
         />
         <InputGroupAddon align="inline-end">
           <InputGroupButton
             size="icon-sm"
+            disabled={disabled}
             aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
             onClick={() => setShowPassword((prev) => !prev)}
           >
@@ -52,7 +45,8 @@ export function PasswordInputForm<T extends FieldValues>({
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>
-      <FieldError errors={[fieldState.error]} />
-    </Field>
+      <FormError error={fieldState.error} />
+    </>
+
   )
 }

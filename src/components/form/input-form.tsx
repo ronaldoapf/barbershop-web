@@ -1,36 +1,39 @@
-import { useController, type Control, type FieldValues, type Path } from "react-hook-form"
+import { FormError } from '@/components/form/form-error'
+import { Input } from '@/components/ui/input'
+import type { ComponentProps } from 'react'
+import {
+  type FieldValues,
+  type UseControllerProps,
+  useController,
+} from 'react-hook-form'
 
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-
-interface InputFormProps<T extends FieldValues> {
-  control: Control<T>
-  name: Path<T>
-  label: string
-  type?: string
-  placeholder?: string
-}
+export type InputFormProps<T extends FieldValues> = ComponentProps<
+  typeof Input
+> &
+  UseControllerProps<T>
 
 export function InputForm<T extends FieldValues>({
-  control,
   name,
-  label,
-  type = "text",
-  placeholder,
-}: InputFormProps<T>): React.JSX.Element {
-  const { field, fieldState } = useController({ control, name })
+  control,
+  ...props
+}: InputFormProps<T>) {
+  const {
+    field,
+    fieldState: { error },
+  } = useController({
+    name,
+    control,
+  })
 
   return (
-    <Field data-invalid={fieldState.error ? true : undefined}>
-      <FieldLabel htmlFor={String(name)} className="text-foreground">{label}</FieldLabel>
+    <>
       <Input
-        id={String(name)}
-        type={type}
-        placeholder={placeholder}
-        aria-invalid={!!fieldState.error}
+        className={error && 'border-red-500 focus-visible:ring-red-300!'}
+        id={name}
+        {...props}
         {...field}
       />
-      <FieldError errors={[fieldState.error]} />
-    </Field>
+      <FormError error={error} />
+    </>
   )
 }
