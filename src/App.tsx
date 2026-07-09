@@ -9,7 +9,7 @@ import { ThemeProvider } from './contexts/theme-provider'
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey='vite-ui-theme'>
+      <ThemeProvider defaultTheme="light" storageKey='vite-ui-theme'>
         <TooltipProvider>
           <BrowserRouter>
             <AppRouter />
