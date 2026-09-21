@@ -1,6 +1,6 @@
 import type { Table } from '@tanstack/react-table'
 import { Search, X } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { DataTableFilterMultiple } from './data-table-filter-multiple'
 import { DataTableFilterSelect } from './data-table-filter-select'
@@ -32,6 +32,7 @@ export function DataTableToolbar<TData>({
   searchPlaceholder = 'Search...',
 }: DataTableToolbarProps<TData>) {
   const [localSearch, setLocalSearch] = useState(search)
+  const [prevSearch, setPrevSearch] = useState(search)
   const [addedFilters, setAddedFilters] = useState<string[]>(() =>
     // initialise from URL so back-navigation restores toolbar filters
     filterFields
@@ -40,9 +41,10 @@ export function DataTableToolbar<TData>({
   )
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => {
+  if (search !== prevSearch) {
+    setPrevSearch(search)
     setLocalSearch(search)
-  }, [search])
+  }
 
   function handleSearchChange(value: string) {
     setLocalSearch(value)

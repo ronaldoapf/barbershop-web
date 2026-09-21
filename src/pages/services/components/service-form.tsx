@@ -1,15 +1,16 @@
 import { Scissors, Sparkles } from "lucide-react"
-import { useForm, useWatch } from "react-hook-form"
+import { useController, useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 
-import { useCreateService } from "@/api/catalog/hooks"
+import { useCreateService } from "@/api/services/hooks"
+import { useListBarbers } from "@/api/users/hooks"
 import { CurrencyInputForm } from "@/components/form/currency-input-form"
 import { InputForm } from "@/components/form/input-form"
 import { NumberInputForm } from "@/components/form/number-input-form"
-import { SelectForm } from "@/components/form/select-form"
 import { TextareaForm } from "@/components/form/textarea-form"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Field,
   FieldDescription,
@@ -20,54 +21,65 @@ import {
 import { SheetFooter } from "@/components/ui/sheet"
 import {
   serviceFormSchema,
-  type CategoryResponse,
   type ServiceFormData,
   type ServiceFormInput,
-} from "@/schemas/catalog"
+} from "@/schemas/services"
 
 interface ServiceFormProps {
   order: number
-  categories: CategoryResponse[]
   onSuccess: () => void
   onCancel?: () => void
 }
 
-export function ServiceForm({ order, categories, onSuccess, onCancel }: ServiceFormProps): React.JSX.Element {
+export function ServiceForm({ order, onSuccess, onCancel }: ServiceFormProps): React.JSX.Element {
   const {
-    mutateAsync: createService, 
-    isPending: isPendingCreateService 
+    mutateAsync: createService,
+    isPending: isPendingCreateService,
   } = useCreateService()
+
+  const { data: barbersData, isLoading: isLoadingBarbers } = useListBarbers({ limit: 100 })
 
   const form = useForm<ServiceFormInput, unknown, ServiceFormData>({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
       name: "",
       price: "",
-      categoryId: "",
       description: "",
       pointsEarned: "",
       pointsRequired: "",
       durationMinutes: "",
+      barberIds: [],
     },
   })
-  
+
   const { control, handleSubmit } = form
 
   const previewName = useWatch({ control: form.control, name: "name" })
   const previewPrice = useWatch({ control: form.control, name: "price" })
   const previewDuration = useWatch({ control: form.control, name: "durationMinutes" })
 
+  const { field: barberIdsField } = useController({ control, name: "barberIds" })
+  const selectedBarberIds = barberIdsField.value ?? []
+
+  function toggleBarber(barberId: string, checked: boolean): void {
+    if (checked) {
+      barberIdsField.onChange([...selectedBarberIds, barberId])
+    } else {
+      barberIdsField.onChange(selectedBarberIds.filter((id) => id !== barberId))
+    }
+  }
+
   const onSubmit = handleSubmit(async (data: ServiceFormData) => {
     createService(
       {
         name: data.name,
-        categoryId: data.categoryId || undefined,
         description: data.description || undefined,
-        price: data.price,
+        price: Math.round(data.price * 100),
         durationMinutes: data.durationMinutes,
         order,
         pointsEarned: data.pointsEarned,
         pointsRequired: data.pointsRequired,
+        barberIds: data.barberIds?.length ? data.barberIds : undefined,
       },
       {
         onSuccess: () => {
@@ -116,19 +128,6 @@ export function ServiceForm({ order, categories, onSuccess, onCancel }: ServiceF
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="categoryId">Categoria</FieldLabel>
-            <SelectForm
-              name="categoryId"
-              control={control}
-              placeholder="Selecione uma categoria"
-              options={categories.map((category) => ({
-                value: category.id,
-                label: category.name,
-              }))}
-            />
-          </Field>
-
-          <Field>
             <FieldLabel htmlFor="description">Descrição</FieldLabel>
             <TextareaForm
               rows={3}
@@ -162,7 +161,7 @@ export function ServiceForm({ order, categories, onSuccess, onCancel }: ServiceF
           </div>
 
           <FieldSeparator>Fidelidade (opcional)</FieldSeparator>
-          
+
           <FieldDescription>
             Defina quantos pontos de fidelidade este serviço gera ou consome, se aplicável.
           </FieldDescription>
@@ -190,6 +189,37 @@ export function ServiceForm({ order, categories, onSuccess, onCancel }: ServiceF
               />
             </Field>
           </div>
+
+          <FieldSeparator>Barbeiros</FieldSeparator>
+
+          <Field>
+            <FieldLabel htmlFor="barberIds">Barbeiros habilitados</FieldLabel>
+            <FieldDescription>
+              Selecione quais barbeiros podem realizar este serviço.
+            </FieldDescription>
+            <div className="flex max-h-40 flex-col gap-2 overflow-y-auto rounded-md border p-3">
+              {isLoadingBarbers ? (
+                <span className="text-sm text-muted-foreground">Carregando barbeiros...</span>
+              ) : barbersData?.data.length ? (
+                barbersData.data.map((barber) => (
+                  <label
+                    key={barber.id}
+                    htmlFor={`barber-${barber.id}`}
+                    className="flex items-center gap-2 text-sm text-foreground"
+                  >
+                    <Checkbox
+                      id={`barber-${barber.id}`}
+                      checked={selectedBarberIds.includes(barber.id)}
+                      onCheckedChange={(checked) => toggleBarber(barber.id, checked === true)}
+                    />
+                    {barber.user.name}
+                  </label>
+                ))
+              ) : (
+                <span className="text-sm text-muted-foreground">Nenhum barbeiro cadastrado.</span>
+              )}
+            </div>
+          </Field>
         </FieldGroup>
       </div>
 

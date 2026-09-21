@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 import { InputForm } from "@/components/form/input-form"
 import { Button } from "@/components/ui/button"
-import { FieldGroup } from "@/components/ui/field"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { forgotPasswordSchema, type ForgotPasswordData } from "@/schemas/forgot-password"
 
 export function ForgotPasswordForm(): React.JSX.Element {
@@ -20,13 +20,15 @@ export function ForgotPasswordForm(): React.JSX.Element {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
       <FieldGroup>
-        <InputForm
-          name="email"
-          type="email"
-          label="Email"
-          control={form.control}
-          placeholder="m@exemplo.com"
-        />
+        <Field>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <InputForm
+            name="email"
+            type="email"
+            control={form.control}
+            placeholder="m@exemplo.com"
+          />
+        </Field>
         <Button type="submit" className="w-full">
           Enviar instruções
         </Button>

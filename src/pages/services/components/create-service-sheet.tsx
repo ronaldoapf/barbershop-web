@@ -11,14 +11,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import type { CategoryResponse } from "@/schemas/catalog"
 
 interface CreateServiceSheetProps {
   order: number
-  categories: CategoryResponse[]
 }
 
-export function CreateServiceSheet({ order, categories }: CreateServiceSheetProps): React.JSX.Element {
+export function CreateServiceSheet({ order }: CreateServiceSheetProps): React.JSX.Element {
   const [open, setOpen] = useState(false)
 
   return (
@@ -26,19 +24,18 @@ export function CreateServiceSheet({ order, categories }: CreateServiceSheetProp
       <SheetTrigger asChild>
         <Button data-icon="inline-start">
           <Plus />
-          Novo serviço
+          Criar serviço
         </Button>
       </SheetTrigger>
       <SheetContent className="min-w-3xl">
         <SheetHeader>
-          <SheetTitle>Novo serviço</SheetTitle>
+          <SheetTitle>Criar serviço</SheetTitle>
           <SheetDescription>
             Preencha os dados abaixo para adicionar um serviço ao catálogo.
           </SheetDescription>
         </SheetHeader>
         <ServiceForm
           order={order}
-          categories={categories}
           onSuccess={() => setOpen(false)}
           onCancel={() => setOpen(false)}
         />

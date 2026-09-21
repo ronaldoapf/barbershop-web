@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { Popover, PopoverAnchor, PopoverContent } from './ui/popover';
 import { Input } from './ui/input';
 import { Calendar } from './ui/calendar';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 const DATE_FORMAT = 'dd/MM/yyyy';
 
@@ -48,12 +48,14 @@ export function DatePicker({
     value ? format(value, DATE_FORMAT) : '',
   );
   const [month, setMonth] = useState<Date>(value ?? new Date());
+  const [prevValue, setPrevValue] = useState(value);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   // Keep input in sync when external value changes
-  useEffect(() => {
+  if (value !== prevValue) {
+    setPrevValue(value);
     setInputValue(value ? format(value, DATE_FORMAT) : '');
-  }, [value]);
+  }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const masked = maskDate(e.target.value);

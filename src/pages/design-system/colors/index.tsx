@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 
 interface TokenMeta {
@@ -273,13 +273,9 @@ function TokenCard({ token }: TokenCardProps) {
 }
 
 export function ColorsPage() {
-  const [tokenValues, setTokenValues] = useState<Record<string, TokenValues>>(
+  const [tokenValues] = useState<Record<string, TokenValues>>(
     () => readCssTokenValues(ALL_VARIABLES)
   )
-
-  useEffect(() => {
-    setTokenValues(readCssTokenValues(ALL_VARIABLES))
-  }, [])
 
   const resolvedGroups = COLOR_GROUPS.map((group) => ({
     ...group,

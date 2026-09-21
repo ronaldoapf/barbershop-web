@@ -11,7 +11,7 @@ import { Scissors, Trash2 } from "lucide-react"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
 
-import { useDeleteService, useToggleServiceStatus } from "@/api/catalog/hooks"
+import { useDeleteService, useToggleServiceStatus } from "@/api/services/hooks"
 import {
   DataTable,
   type DataTableFilterField,
@@ -29,13 +29,12 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
-import type { CategoryResponse, ServiceResponse } from "@/schemas/catalog"
+import type { Service } from "@/api/services/types"
 
 interface ServicesTableProps {
-  data: ServiceResponse[]
+  data: Service[]
   rowCount: number
   pageCount: number
-  categories: CategoryResponse[]
   page: number
   limit: number
   searchParams: URLSearchParams
@@ -53,7 +52,6 @@ export function ServicesTable({
   data,
   rowCount,
   pageCount,
-  categories,
   page,
   limit,
   searchParams,
@@ -73,18 +71,13 @@ export function ServicesTable({
 
   const [search, setSearch] = useState("")
   const [sorting, setSorting] = useState<SortingState>([])
-  const [serviceToDelete, setServiceToDelete] = useState<ServiceResponse | null>(null)
+  const [serviceToDelete, setServiceToDelete] = useState<Service | null>(null)
 
   const filteredData = useMemo(() => {
     if (!search) return data
     const query = search.toLowerCase()
     return data.filter((service) => service.name.toLowerCase().includes(query))
   }, [data, search])
-
-  const categoryNameById = useMemo(
-    () => new Map(categories.map((category) => [category.id, category.name])),
-    [categories],
-  )
 
   const filterFields = useMemo<DataTableFilterField[]>(
     () => [
@@ -97,20 +90,11 @@ export function ServicesTable({
           { value: "INACTIVE", label: "Inativo" },
         ],
       },
-      {
-        id: "categoryId",
-        label: "Categoria",
-        type: "select",
-        options: categories.map((category) => ({
-          value: category.id,
-          label: category.name,
-        })),
-      },
     ],
-    [categories],
+    [],
   )
 
-  const columns = useMemo<ColumnDef<ServiceResponse, unknown>[]>(
+  const columns = useMemo<ColumnDef<Service, unknown>[]>(
     () => [
       {
         accessorKey: "name",
@@ -135,19 +119,7 @@ export function ServicesTable({
           )
         },
       },
-      {
-        id: "category",
-        header: "Categoria",
-        enableSorting: false,
-        cell: ({ row }) => {
-          const categoryName = categoryNameById.get(row.original.categoryId ?? "")
-          return categoryName ? (
-            <Badge variant="outline">{categoryName}</Badge>
-          ) : (
-            <span className="text-muted-foreground">Sem categoria</span>
-          )
-        },
-      },
+    
       {
         accessorKey: "price",
         header: "Preço",
@@ -229,7 +201,7 @@ export function ServicesTable({
         },
       },
     ],
-    [categoryNameById, isTogglingStatus, togglingServiceId, toggleServiceStatus, isDeletingService, deletingServiceId],
+    [isTogglingStatus, togglingServiceId, toggleServiceStatus, isDeletingService, deletingServiceId],
   )
 
   async function handleConfirmDelete(): Promise<void> {
@@ -277,7 +249,6 @@ export function ServicesTable({
   function resetFilters(): void {
     setSearch("")
     setParam("status", null)
-    setParam("categoryId", null)
   }
 
   return (

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import { InputForm } from "@/components/form/input-form"
 import { PasswordInputForm } from "@/components/form/password-input-form"
 import { Button } from "@/components/ui/button"
-import { FieldGroup } from "@/components/ui/field"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { signUpSchema, type SignUpData } from "@/schemas/sign-up"
 
 export function SignUpForm(): React.JSX.Element {
@@ -26,29 +26,37 @@ export function SignUpForm(): React.JSX.Element {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
       <FieldGroup>
-        <InputForm
-          name="name"
-          label="Nome"
-          control={form.control}
-          placeholder="João Silva"
-        />
-        <InputForm
-          name="email"
-          type="email"
-          label="Email"
-          control={form.control}
-          placeholder="m@exemplo.com"
-        />
-        <PasswordInputForm
-          label="Senha"
-          name="password"
-          control={form.control}
-        />
-        <PasswordInputForm
-          control={form.control}
-          name="confirmPassword"
-          label="Confirmar senha"
-        />
+        <Field>
+          <FieldLabel htmlFor="name">Nome</FieldLabel>
+          <InputForm
+            name="name"
+            control={form.control}
+            placeholder="João Silva"
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <InputForm
+            name="email"
+            type="email"
+            control={form.control}
+            placeholder="m@exemplo.com"
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="password">Senha</FieldLabel>
+          <PasswordInputForm
+            name="password"
+            control={form.control}
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="confirmPassword">Confirmar senha</FieldLabel>
+          <PasswordInputForm
+            control={form.control}
+            name="confirmPassword"
+          />
+        </Field>
         <Button type="submit" className="w-full">
           Criar conta
         </Button>

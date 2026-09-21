@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 import { PasswordInputForm } from "@/components/form/password-input-form"
 import { Button } from "@/components/ui/button"
-import { FieldGroup } from "@/components/ui/field"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { resetPasswordSchema, type ResetPasswordData } from "@/schemas/reset-password"
 
 export function ResetPasswordForm(): React.JSX.Element {
@@ -23,16 +23,20 @@ export function ResetPasswordForm(): React.JSX.Element {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
       <FieldGroup>
-        <PasswordInputForm
-          name="password"
-          label="Nova senha"
-          control={form.control}
-        />
-        <PasswordInputForm
-          name="confirmPassword"
-          label="Confirmar nova senha"
-          control={form.control}
-        />
+        <Field>
+          <FieldLabel htmlFor="password">Nova senha</FieldLabel>
+          <PasswordInputForm
+            name="password"
+            control={form.control}
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="confirmPassword">Confirmar nova senha</FieldLabel>
+          <PasswordInputForm
+            name="confirmPassword"
+            control={form.control}
+          />
+        </Field>
         <Button type="submit" className="w-full">
           Redefinir senha
         </Button>
