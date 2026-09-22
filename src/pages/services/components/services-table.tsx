@@ -30,6 +30,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import type { Service } from "@/api/services/types"
+import { formatCurrency } from "@/utils/currency"
 
 interface ServicesTableProps {
   data: Service[]
@@ -39,13 +40,6 @@ interface ServicesTableProps {
   limit: number
   searchParams: URLSearchParams
   setParam: (key: string, value: string | null) => void
-}
-
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value)
 }
 
 export function ServicesTable({
@@ -125,7 +119,7 @@ export function ServicesTable({
         header: "Preço",
         cell: ({ getValue }) => (
           <span className="font-medium tabular-nums text-foreground">
-            {formatCurrency(getValue<number>())}
+            {formatCurrency(getValue<number>() / 100)}
           </span>
         ),
       },

@@ -24,6 +24,7 @@ import {
   type ServiceFormData,
   type ServiceFormInput,
 } from "@/schemas/services"
+import { formatCurrency } from "@/utils/currency"
 
 interface ServiceFormProps {
   order: number
@@ -94,10 +95,7 @@ export function ServiceForm({ order, onSuccess, onCancel }: ServiceFormProps): R
     )
   })
 
-  const formattedPrice = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(Number(previewPrice) || 0)
+  const formattedPrice = formatCurrency(Number(previewPrice) || 0)
 
   return (
     <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col">
