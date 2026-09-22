@@ -1,8 +1,10 @@
 import { useMutation } from "@tanstack/react-query"
 import type { UseMutationResult } from "@tanstack/react-query"
-import { login, logout, refreshToken, register } from "."
-import type { AuthResponse, LoginDto, RefreshTokenDto, RegisterDto } from "@/schemas/auth"
+import type { LoginDto, RegisterDto } from "@/schemas/auth"
 import type { UserResponse } from "@/schemas/user"
+import { AuthApi } from "."
+
+const { login, logout, refreshToken, register } = AuthApi
 
 export function useRegister(): UseMutationResult<UserResponse, Error, RegisterDto> {
   return useMutation({
@@ -10,19 +12,19 @@ export function useRegister(): UseMutationResult<UserResponse, Error, RegisterDt
   })
 }
 
-export function useLogin(): UseMutationResult<AuthResponse, Error, LoginDto> {
+export function useLogin(): UseMutationResult<UserResponse, Error, LoginDto> {
   return useMutation({
     mutationFn: login,
   })
 }
 
-export function useRefreshToken(): UseMutationResult<AuthResponse, Error, RefreshTokenDto> {
+export function useRefreshToken(): UseMutationResult<void, Error, void> {
   return useMutation({
     mutationFn: refreshToken,
   })
 }
 
-export function useLogout(): UseMutationResult<void, Error, RefreshTokenDto> {
+export function useLogout(): UseMutationResult<void, Error, void> {
   return useMutation({
     mutationFn: logout,
   })
