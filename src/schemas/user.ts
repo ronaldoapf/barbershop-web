@@ -80,9 +80,9 @@ export interface UpdateCustomerDto {
 }
 
 export const barberFormSchema = z.object({
-  name: z.string().trim().min(1, "Informe o nome do funcionário"),
+  name: z.string().trim().min(1, "Informe o nome do Profissional"),
   email: z.string().trim().email("Informe um e-mail válido"),
-  phone: z.string().trim().min(1, "Informe o telefone do funcionário"),
+  phone: z.string().trim().min(1, "Informe o telefone do Profissional"),
   password: z.string().min(6, "A senha deve ter no mínimo 6 caracteres"),
   commissionPercentage: z.coerce
     .number()

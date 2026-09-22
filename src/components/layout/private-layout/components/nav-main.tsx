@@ -18,7 +18,7 @@ interface NavMainItem {
 const navMainItems: NavMainItem[] = [
   { title: "Serviços", icon: Scissors, href:'/app/services' },
   { title: "Clientes", icon: Contact, href:'/app/customers' },
-  { title: "Funcionários", icon: Users, href:'/app/employees' },
+  { title: "Profissionais", icon: Users, href:'/app/professionals' },
 ]
 
 export function NavMain() {

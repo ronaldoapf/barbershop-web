@@ -3,13 +3,12 @@ import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 
-import { loginWithGoogle } from "@/api/auth"
-import { useLogin } from "@/api/auth/hooks"
+import { AuthApi } from "@/api/auth"
 import { InputForm } from "@/components/form/input-form"
 import { PasswordInputForm } from "@/components/form/password-input-form"
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldSeparator } from "@/components/ui/field"
-import { saveTokens } from "@/lib/auth-storage"
+import { useAuth } from "@/hooks/use-auth"
 import { loginSchema, type LoginData } from "@/schemas/login"
 import { Label } from "@/components/ui/label"
 import { Loading } from "@/components/loading"
@@ -17,10 +16,7 @@ import googleIcon from "@/assets/google-icon.svg"
 
 export function LoginForm() {
   const navigate = useNavigate()
-  const { 
-    mutate: login, 
-    isPending: isPendingLogin 
-  } = useLogin()
+  const { login } = useAuth()
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -33,19 +29,16 @@ export function LoginForm() {
   const { handleSubmit, formState: { isSubmitting }} = form
 
   const onSubmit = handleSubmit(async (data: LoginData) => {
-    login(data, {
-      onSuccess: ({ accessToken, refreshToken }) => {
-        saveTokens(accessToken, refreshToken)
-        toast.success("Login realizado com sucesso!")
-        navigate("/app")
-      },
-      onError: () => {
-        toast.error("E-mail ou senha incorretos.")
-      },
-    })
+    try {
+      await login(data)
+      toast.success("Login realizado com sucesso!")
+      navigate("/app")
+    } catch {
+      toast.error("E-mail ou senha incorretos.")
+    }
   })
 
-  const isFormDisabled = isSubmitting || isPendingLogin
+  const isFormDisabled = isSubmitting
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-6">
@@ -95,7 +88,7 @@ export function LoginForm() {
           type="button"
           variant="outline"
           disabled={isFormDisabled}
-          onClick={loginWithGoogle}
+          onClick={AuthApi.loginWithGoogle}
         >
           <img src={googleIcon} alt="" width={18} height={18} aria-hidden="true" />
           Continuar com Google

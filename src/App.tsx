@@ -4,19 +4,22 @@ import { Toaster } from '@/components/ui/sonner'
 import { queryClient } from '@/lib/query-client'
 import { AppRouter } from './routes/app-router'
 import { TooltipProvider } from './components/ui/tooltip'
-import { ThemeProvider } from './contexts/theme-provider'
+import { ThemeProvider } from './contexts/theme-provider/theme-provider'
+import { AuthProvider } from './contexts/auth-context/auth-provider'
 
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey='vite-ui-theme'>
-        <TooltipProvider>
-          <BrowserRouter>
-            <AppRouter />
-          </BrowserRouter>
-          <Toaster position='top-center' />
-        </TooltipProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider defaultTheme="light" storageKey='vite-ui-theme'>
+          <TooltipProvider>
+            <BrowserRouter>
+              <AppRouter />
+            </BrowserRouter>
+            <Toaster position='top-center' />
+          </TooltipProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }

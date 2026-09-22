@@ -12,6 +12,8 @@ import { Sandbox } from '@/pages/sandbox'
 import { Services } from '@/pages/services'
 import { SignUp } from '@/pages/sign-up'
 import { Routes, Route } from 'react-router-dom'
+import { GuestGuard } from './guest-guard'
+import { Professionals } from '@/pages/professionals'
 
 export function AppRouter() {
 	return (
@@ -24,7 +26,11 @@ export function AppRouter() {
 			</Route>
 
 			<Route path="/sandbox" element={<Sandbox />} />
-			<Route path="/login" element={<Login />} />
+
+			<Route element={<GuestGuard />}>
+				<Route path="/login" element={<Login />} />
+			</Route>
+
 			<Route path="/sign-up" element={<SignUp />} />
 			<Route path="/forgot-password" element={<ForgotPassword />} />
 			<Route path="/reset-password" element={<ResetPassword />} />
@@ -33,9 +39,8 @@ export function AppRouter() {
 			<Route path="/app" element={<PrivateLayout />}>
 				<Route index element={<h1>App Home</h1>} />
 				<Route path="services" element={<Services />} />
-				{/* <Route path="services" element={<Services />} />
-				<Route path="customers" element={<Customers />} />
-				<Route path="employees" element={<Employees />} /> */}
+				<Route path="professionals" element={<Professionals />} />
+				{/* <Route path="customers" element={<Customers />} /> */}
 			</Route>
 		</Routes>
 	)

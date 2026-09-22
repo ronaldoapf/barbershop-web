@@ -1,34 +1,28 @@
 import { useEffect } from "react"
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { GalleryVerticalEnd } from "lucide-react"
 
-import { saveTokens } from "@/lib/auth-storage"
+import { useAuth } from "@/hooks/use-auth"
 
 export function AuthCallback() {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const { refetchUser } = useAuth()
 
   useEffect(() => {
     async function handleCallback(): Promise<void> {
-      const accessToken =
-        searchParams.get("accessToken") ?? searchParams.get("access_token")
-      const refreshToken =
-        searchParams.get("refreshToken") ?? searchParams.get("refresh_token")
-
-      if (accessToken && refreshToken) {
-        saveTokens(accessToken, refreshToken)
+      try {
+        await refetchUser()
         toast.success("Login realizado com sucesso!")
-        await new Promise((resolve) => setTimeout(resolve, 1000))
         navigate("/app", { replace: true })
-      } else {
+      } catch {
         toast.error("Falha ao autenticar com o Google.")
         navigate("/login", { replace: true })
       }
     }
 
     void handleCallback()
-  }, [navigate, searchParams])
+  }, [navigate, refetchUser])
 
   return (
     <div className="relative flex min-h-svh items-center justify-center bg-background px-6">

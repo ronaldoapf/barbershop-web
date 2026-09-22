@@ -20,7 +20,7 @@ import type { PaginatedResponse, PaginationParams } from "@/schemas/shared"
 
 export async function getMe(): Promise<UserResponse> {
   const { data } = await apiClient.get("/users/me")
-  return userResponseSchema.parse(data)
+  return data
 }
 
 export async function updateMe(dto: UpdateMeDto): Promise<UserResponse> {

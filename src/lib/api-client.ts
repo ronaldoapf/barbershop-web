@@ -1,5 +1,4 @@
 import axios, { type AxiosError, type AxiosInstance } from "axios"
-import { clearTokens, getAccessToken, getRefreshToken, saveTokens } from "./auth-storage"
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -9,31 +8,16 @@ export const apiClient: AxiosInstance = axios.create({
   },
 })
 
-apiClient.interceptors.request.use((config) => {
-  const token = getAccessToken()
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
-})
-
 const retriedRequests = new WeakSet<object>()
 
-let refreshPromise: Promise<string> | null = null
+let refreshPromise: Promise<void> | null = null
 
-async function refreshAccessToken(): Promise<string> {
-  const refreshToken = getRefreshToken()
-  if (!refreshToken) {
-    throw new Error("Missing refresh token")
-  }
-
-  const { data } = await axios.post<{ accessToken: string; refreshToken: string }>(
+async function refreshAccessToken(): Promise<void> {
+  await axios.post(
     `${import.meta.env.VITE_API_URL}/auth/refresh`,
-    { refreshToken },
+    {},
+    { withCredentials: true },
   )
-
-  saveTokens(data.accessToken, data.refreshToken)
-  return data.accessToken
 }
 
 apiClient.interceptors.response.use(
@@ -56,12 +40,12 @@ apiClient.interceptors.response.use(
       refreshPromise ??= refreshAccessToken().finally(() => {
         refreshPromise = null
       })
-      const accessToken = await refreshPromise
-      originalRequest.headers.Authorization = `Bearer ${accessToken}`
+      await refreshPromise
       return apiClient(originalRequest)
     } catch (refreshError) {
-      clearTokens()
-      window.location.href = "/login"
+      if (window.location.pathname.startsWith("/app")) {
+        window.location.href = "/login"
+      }
       return Promise.reject(refreshError)
     }
   },
